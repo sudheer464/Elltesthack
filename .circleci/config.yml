@@ -18,15 +18,15 @@ jobs:
       
       - run:
           name: Build
-          command: docker build -t sudheeramgothu/ellhack:latest .
+          command: docker build -t sudheeramgothu/ellcouchbase:latest couchbase/Dockerfile
       
       - run:
           name: Push
           command: |
             docker login -u$DOCKERHUB_LOGIN -p$DOCKERHUB_PASSWORD
-            docker tag sudheeramgothu/ellhack:latest sudheeramgothu/ellhack:${CIRCLE_SHA1}
-            docker push sudheeramgothu/ellhack:latest
-            docker push sudheeramgothu/ellhack:${CIRCLE_SHA1}
+            docker tag sudheeramgothu/ellcouchbase:latest sudheeramgothu/ellcouchbase:${CIRCLE_SHA1}
+            docker push sudheeramgothu/ellcouchbase:latest
+            docker push sudheeramgothu/ellcouchbase:${CIRCLE_SHA1}
       
       - run:
           name: Deploy
