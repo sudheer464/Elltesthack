@@ -19,7 +19,7 @@ jobs:
       
       - run:
           name: Build
-          command: docker build -t sudheeramgothu/EllHack:latest .
+          command: docker build -t sudheeramgothu/ellHack:latest .
       
       - run:
           name: Push
