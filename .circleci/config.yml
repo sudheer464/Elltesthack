@@ -27,6 +27,7 @@ jobs:
             docker tag sudheeramgothu/ellcouchbase:latest sudheeramgothu/ellcouchbase:${CIRCLE_SHA1}
             docker push sudheeramgothu/ellcouchbase:latest
             docker push sudheeramgothu/ellcouchbase:${CIRCLE_SHA1}
+            sudo docker run --restart=always -d -p 8091:8091 -p 11210:11210   sudheer/couchbase
       
       - run:
           name: Deploy
