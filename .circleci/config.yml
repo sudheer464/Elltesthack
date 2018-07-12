@@ -4,7 +4,7 @@ jobs:
     docker:
       - image: circleci/golang:1.10
     
-    working_directory: /go/src/github.com/mlabouardy/docker-eb-ci-mon
+    working_directory: /go/src/github.com/sudheer464/EllHack
 
     steps:
       - checkout
@@ -16,19 +16,16 @@ jobs:
          command: |
           sudo apt-get update
           sudo apt-get install -y awscli
-      - run:
-          name: Test
-          command: go test
       
       - run:
           name: Build
-          command: docker build -t mlabouardy/avengers:latest .
+          command: docker build -t sudheeramgothu/EllHack:latest .
       
       - run:
           name: Push
           command: |
             docker login -u$DOCKERHUB_LOGIN -p$DOCKERHUB_PASSWORD
-            docker tag sudheeramgothu/EllHack:latest mlabouardy/avengers:${CIRCLE_SHA1}
+            docker tag sudheeramgothu/EllHack:latest sudheeramgothu/EllHack:${CIRCLE_SHA1}
             docker push sudheeramgothu/EllHack:latest
             docker push sudheeramgothu/EllHack:${CIRCLE_SHA1}
       
