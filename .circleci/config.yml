@@ -1,0 +1,43 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.10
+    
+    working_directory: /go/src/github.com/mlabouardy/docker-eb-ci-mon
+
+    steps:
+      - checkout
+
+      - setup_remote_docker
+
+      - run:
+         name: Install AWS CLI
+         command: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+      - run:
+          name: Test
+          command: go test
+      
+      - run:
+          name: Build
+          command: docker build -t mlabouardy/avengers:latest .
+      
+      - run:
+          name: Push
+          command: |
+            docker login -u$DOCKERHUB_LOGIN -p$DOCKERHUB_PASSWORD
+            docker tag sudheeramgothu/EllHack:latest mlabouardy/avengers:${CIRCLE_SHA1}
+            docker push sudheeramgothu/EllHack:latest
+            docker push sudheeramgothu/EllHack:${CIRCLE_SHA1}
+      
+      - run:
+          name: Deploy
+          command: |
+            zip -r deployment-${CIRCLE_SHA1}.zip .
+            aws s3 cp deployment-${CIRCLE_SHA1}.zip s3://ellhackdocker --region us-east-1
+            aws elasticbeanstalk create-application-version --application-name EllHack \
+                --version-label ${CIRCLE_SHA1} --source-bundle S3Bucket="ellhackdocker",S3Key="deployment-${CIRCLE_SHA1}.zip" --region us-east-1
+            aws elasticbeanstalk update-environment --application-name EllHack \
+                --environment-name testing --version-label ${CIRCLE_SHA1} --region us-east-1
